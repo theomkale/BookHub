@@ -10,6 +10,7 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.fragment.app.FragmentManager
 import com.google.android.material.navigation.NavigationView
 
 class MainActivity : AppCompatActivity() {
@@ -18,7 +19,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var toolbar: androidx.appcompat.widget.Toolbar
     lateinit var navigationView: NavigationView
     lateinit var frameLayout: FrameLayout
-
+    var previousMenuItem: MenuItem?=null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -27,7 +28,9 @@ class MainActivity : AppCompatActivity() {
         toolbar = findViewById(R.id.toolbar)
         navigationView = findViewById(R.id.navigationView)
         frameLayout = findViewById(R.id.frameLayout)
+
         setupToolBar()
+        openDashboard()
 
 //        hamburger is also called as actionBarDrawerToggle
 //        need to create a object of it to make it functional toggle is utility
@@ -44,18 +47,32 @@ class MainActivity : AppCompatActivity() {
 
         //        for onclick on navigation item selected
         navigationView.setNavigationItemSelectedListener {
+            if(previousMenuItem!=null){
+                previousMenuItem?.isChecked=false
+            }
+            it.isCheckable=true
+            it.isChecked=true
+            previousMenuItem=it
             when(it.itemId){
                 R.id.dashboard->{
-                    Toast.makeText(this@MainActivity,"Dashboard",Toast.LENGTH_SHORT).show()
+                 openDashboard()
+                    drawerLayout.closeDrawers()
+
                 }
                 R.id.profile->{
-                    Toast.makeText(this@MainActivity,"Profile",Toast.LENGTH_SHORT).show()
+                    supportFragmentManager.beginTransaction().replace(R.id.frameLayout,ProfileFragment()).addToBackStack("Profile").commit()
+                    supportActionBar?.title="Profile"
+                    drawerLayout.closeDrawers()
                 }
                 R.id.aboutApp->{
-                    Toast.makeText(this@MainActivity,"About App",Toast.LENGTH_SHORT).show()
+                    supportFragmentManager.beginTransaction().replace(R.id.frameLayout,AboutAppFragment()).addToBackStack("About App").commit()
+                    supportActionBar?.title="About App"
+                    drawerLayout.closeDrawers()
                 }
                 R.id.favourites->{
-                    Toast.makeText(this@MainActivity,"Favourites",Toast.LENGTH_SHORT).show()
+                    supportFragmentManager.beginTransaction().replace(R.id.frameLayout,FavouritesFragment()).addToBackStack("Favourites").commit()
+                    supportActionBar?.title="Favourites"
+                    drawerLayout.closeDrawers()
                 }
                 else->{
                     println("Something went wrong")
@@ -66,7 +83,7 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-
+//  set toolbar
     fun setupToolBar() {
         setSupportActionBar(toolbar)
         supportActionBar?.title = "BookHub"
@@ -86,4 +103,22 @@ class MainActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
+    //open dashboard
+    fun openDashboard(){
+        val fragment=DashboardFragment()
+        val transaction=supportFragmentManager.beginTransaction()
+        transaction.replace(R.id.frameLayout,fragment)
+        transaction.commit()
+        supportActionBar?.title="Dashboard"
+        navigationView.setCheckedItem(R.id.dashboard)
+    }
+
+    override fun onBackPressed() {
+        val frag= supportFragmentManager.findFragmentById(R.id.frameLayout)
+        when(frag){
+            !is DashboardFragment->openDashboard()
+            else ->super.onBackPressed()
+        }
+
+    }
 }
