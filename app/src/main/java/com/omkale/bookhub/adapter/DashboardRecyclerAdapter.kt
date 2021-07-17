@@ -35,7 +35,7 @@ class DashboardRecyclerAdapter(val context:Context,val itemList:ArrayList<Book>)
         holder.textbookRating.text=book.bookRating
         holder.imageView.setImageResource(book.bookImage)
         holder.viewHolderTile.setOnClickListener{
-            Toast.makeText(context,"You have some intrest in ${holder.textbookAuthor}'s work.",Toast.LENGTH_SHORT).show()
+            Toast.makeText(context,"You have some intrest in ${holder.textbookAuthor.text}'s work.",Toast.LENGTH_SHORT).show()
         }
 
     }

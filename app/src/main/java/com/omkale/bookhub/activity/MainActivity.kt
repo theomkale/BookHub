@@ -1,17 +1,19 @@
-package com.omkale.bookhub
+package com.omkale.bookhub.activity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.FrameLayout
-import android.widget.Toast
-import android.widget.Toolbar
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.fragment.app.FragmentManager
 import com.google.android.material.navigation.NavigationView
+import com.omkale.bookhub.*
+import com.omkale.bookhub.fragment.AboutAppFragment
+import com.omkale.bookhub.fragment.DashboardFragment
+import com.omkale.bookhub.fragment.FavouritesFragment
+import com.omkale.bookhub.fragment.ProfileFragment
 
 class MainActivity : AppCompatActivity() {
     lateinit var drawerLayout: DrawerLayout
@@ -54,23 +56,32 @@ class MainActivity : AppCompatActivity() {
             it.isChecked=true
             previousMenuItem=it
             when(it.itemId){
-                R.id.dashboard->{
+                R.id.dashboard ->{
                  openDashboard()
                     drawerLayout.closeDrawers()
 
                 }
-                R.id.profile->{
-                    supportFragmentManager.beginTransaction().replace(R.id.frameLayout,ProfileFragment()).addToBackStack("Profile").commit()
+                R.id.profile ->{
+                    supportFragmentManager.beginTransaction().replace(
+                        R.id.frameLayout,
+                        ProfileFragment()
+                    ).addToBackStack("Profile").commit()
                     supportActionBar?.title="Profile"
                     drawerLayout.closeDrawers()
                 }
-                R.id.aboutApp->{
-                    supportFragmentManager.beginTransaction().replace(R.id.frameLayout,AboutAppFragment()).addToBackStack("About App").commit()
+                R.id.aboutApp ->{
+                    supportFragmentManager.beginTransaction().replace(
+                        R.id.frameLayout,
+                        AboutAppFragment()
+                    ).addToBackStack("About App").commit()
                     supportActionBar?.title="About App"
                     drawerLayout.closeDrawers()
                 }
-                R.id.favourites->{
-                    supportFragmentManager.beginTransaction().replace(R.id.frameLayout,FavouritesFragment()).addToBackStack("Favourites").commit()
+                R.id.favourites ->{
+                    supportFragmentManager.beginTransaction().replace(
+                        R.id.frameLayout,
+                        FavouritesFragment()
+                    ).addToBackStack("Favourites").commit()
                     supportActionBar?.title="Favourites"
                     drawerLayout.closeDrawers()
                 }
@@ -105,7 +116,7 @@ class MainActivity : AppCompatActivity() {
 
     //open dashboard
     fun openDashboard(){
-        val fragment=DashboardFragment()
+        val fragment= DashboardFragment()
         val transaction=supportFragmentManager.beginTransaction()
         transaction.replace(R.id.frameLayout,fragment)
         transaction.commit()
@@ -116,7 +127,7 @@ class MainActivity : AppCompatActivity() {
     override fun onBackPressed() {
         val frag= supportFragmentManager.findFragmentById(R.id.frameLayout)
         when(frag){
-            !is DashboardFragment->openDashboard()
+            !is DashboardFragment ->openDashboard()
             else ->super.onBackPressed()
         }
 
